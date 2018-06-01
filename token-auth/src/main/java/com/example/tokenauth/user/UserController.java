@@ -13,13 +13,13 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public Iterable<User> getUsers() {
+    public @ResponseBody Iterable<User> getUsers() {
         return userRepository.findAll();
     }
 
     @PostMapping("/users")
     public @ResponseBody User addUser(@RequestBody UserForm userForm) {
-        User usr = new User(userForm.getName() , userForm.getEmail());
+        User usr = new User(userForm.getEmail() , userForm.getPassword());
         return userRepository.save(usr);
     }
 }

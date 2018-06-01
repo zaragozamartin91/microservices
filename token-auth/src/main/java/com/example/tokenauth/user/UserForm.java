@@ -1,19 +1,19 @@
 package com.example.tokenauth.user;
 
 public class UserForm {
-    private String name;
     private String email;
+    private String password;
 
-    public UserForm(String name, String email) {
-        this.name = name;
+    public UserForm(String email, String password) {
         this.email = email;
-    }
-
-    public String getName() {
-        return name;
+        this.password = password;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

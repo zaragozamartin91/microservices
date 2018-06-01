@@ -28,14 +28,14 @@ public class LoginController {
     public @ResponseBody  LoginResponse login(@RequestBody User user) {
         System.out.printf("User request: %s\n" , user.toString());
 
-        if (user.getEmail() == null || user.getName() == null) {
+        if (user.getEmail() == null || user.getPassword() == null) {
             throw new IllegalArgumentException("Nombre y/o correo invalidos");
         }
 
         final String email = user.getEmail();
 
         Optional<User> usr = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(u -> user.getName().equals(u.getName()))
+                .filter(u -> user.getPassword().equals(u.getPassword()))
                 .filter(u -> user.getEmail().equals(u.getEmail()))
                 .findAny();
         System.out.printf("Found user: %s\n" , usr.toString());
@@ -52,11 +52,11 @@ public class LoginController {
 
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.BAD_REQUEST.value());
+        response.sendError(HttpStatus.BAD_REQUEST.value() , e.getMessage());
     }
 
     @ExceptionHandler
     void handleUnauthorizedException(UnauthorizedException e, HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.UNAUTHORIZED.value());
+        response.sendError(HttpStatus.UNAUTHORIZED.value() , e.getMessage());
     }
 }
