@@ -25,24 +25,31 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public @ResponseBody  LoginResponse login(@RequestBody User user) {
-        System.out.printf("User request: %s\n" , user.toString());
+    public @ResponseBody  LoginResponse login(@RequestBody LoginForm loginForm) {
+        System.out.printf("User request: %s\n" , loginForm.toString());
 
-        if (user.getEmail() == null || user.getPassword() == null) {
+        String password = loginForm.getPassword();
+        final String email = loginForm.getEmail();
+
+        if (email == null || password == null) {
             throw new IllegalArgumentException("Nombre y/o correo invalidos");
         }
 
-        final String email = user.getEmail();
+        Optional<User> usr = Optional.ofNullable(userRepository.findOneByEmail(email));
 
-        Optional<User> usr = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(u -> user.getPassword().equals(u.getPassword()))
-                .filter(u -> user.getEmail().equals(u.getEmail()))
-                .findAny();
+//        Optional<User> usr = StreamSupport.stream(userRepository.findAll().spliterator(), false)
+//                .filter(u -> loginForm.getPassword().equals(u.getPassword()))
+//                .filter(u -> loginForm.getEmail().equals(u.getEmail()))
+//                .findAny();
         System.out.printf("Found user: %s\n" , usr.toString());
 
-        if (usr.isPresent()) {
-            String jwtToken = Jwts.builder().setSubject(email).claim("roles", "user").setIssuedAt(new Date())
-                    .signWith(SignatureAlgorithm.HS256, "secretkey").compact();
+        if (usr.isPresent() && usr.get().getPassword().equals(password)) {
+            String jwtToken = Jwts.builder()
+                    .setSubject(email)
+                    .claim("roles", "user")
+                    .setIssuedAt(new Date())
+                    .signWith(SignatureAlgorithm.HS256, "secretkey")
+                    .compact();
             System.out.println("Token: " + jwtToken);
             return new LoginResponse("Login ok!" , jwtToken);
         } else {

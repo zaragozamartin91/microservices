@@ -1,9 +1,6 @@
 package com.example.tokenauth.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class User {
@@ -14,6 +11,10 @@ public class User {
     private String email;
 
     private String password;
+
+//    @OneToOne
+//    @JoinColumn
+//    private UserInfo userInfo;
 
     public User() {
     }
@@ -46,6 +47,14 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+//    public UserInfo getUserInfo() {
+//        return userInfo;
+//    }
+//
+//    public void setUserInfo(UserInfo userInfo) {
+//        this.userInfo = userInfo;
+//    }
 
     @Override public String toString() {
         return "User{" +
